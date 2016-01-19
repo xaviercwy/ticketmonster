@@ -1,0 +1,1 @@
+This file is added to ensure that the directory is retained in git even when no Cordova plugins are present and/or used in the project.

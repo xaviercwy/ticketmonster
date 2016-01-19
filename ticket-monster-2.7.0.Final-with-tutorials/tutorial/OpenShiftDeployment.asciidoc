@@ -1,0 +1,325 @@
+= Appendix B - Deploying to OpenShift
+:Author: Vineet Reynolds
+
+== What Will You Learn Here?
+
+This appendix demonstrates how to import, develop and deploy the TicketMonster example using JBoss Developer Studio:
+
+* Obtain and import the TicketMonster example source code
+* Deploy the application to OpenShift Online with OpenShift Tools
+
+== Import the Project source code
+
+Once the TicketMonster source code is obtained and unpackaged, you must import it into JBoss
+Developer Studio, as detailed in the procedure below. TicketMonster is a Maven-based project so a
+specific Import Maven Project wizard is used for the import.
+
+. Click *File*→*Import* to open the *Import* wizard.
+. Expand *Maven*, select *Existing Maven Projects* and click *Next*.
+. In the *Root Directory* field, enter the path to the TicketMonster source code. Alternatively,
+click *Browse* to navigate to the source code location. The *Import Maven Project* wizard
+recursively searches the path for a *pom.xml* file. The *pom.xml* file identifies the project as a
+Maven project. The file is listed under *Projects* once it is found.
++
+.pom.xml File Listed in the Projects Pane
+image::gfx/pom-file-projects-pane.png[]
+. Click *Finish*. When the import process is complete, the project is listed in the *Project Explorer* view.
+
+
+== Pre-requisites
+
+We will be pushing the TicketMonster sources to a git repository on OpenShift, where the application would be built and deployed.
+The build on OpenShift, and hence the `git push` can timeout, since Maven dependencies will have to be fetched from the Red Hat Enterprise Maven repository or other repositories. 
+
+We'll get around this drawback by configuring JBoss Developer Studio to not time out sooner. To do do, set the Git connection timeout to 300 seconds. Click *Window* → *Preferences*, expand *Team* and
+select *Git*. In the *Remote connection timeout (seconds)* field, type *300* and click *Apply* and click *OK*.
+
+[[git-remote-connection-timeout]]
+.Modify the git remote connection timeout
+image::gfx/git-remote-connection-timeout.png[]
+
+== Deploying to OpenShift using JBoss Developer Studio
+
+To deploy TicketMonster to OpenShift Online, you must create a new OpenShift Online application based on the existing workspace project using OpenShift Tools, as detailed in the procedure below.
+
+[NOTE]
+=====================================================================================
+This procedure documents the deploying process for first-time OpenShift Online users. This
+includes one-time steps, such as signing up for an OpenShift Online account, creating an
+OpenShift Online domain and uploading SSH keys. If you have previously used OpenShift
+Online and OpenShift Tools, omit the one-time steps as appropriate.
+=====================================================================================
+
+. In JBoss Central, under Start from scratch, click OpenShift Application.
+. Click the _Please sign up here_ link to create an OpenShift Online account and follow the
+instructions on the OpenShift web page displayed in your default system web browser. Once
+you have completed the sign-up process, restart the New OpenShift Application wizard.
++
+. Complete the fields about your OpenShift Online account as follows:
+* From the Connection list, select New Connection.
+* Ensure the Use default server check box is selected.
+* In the Username and Password fields, type your account credentials.
++
+[[completed-username-password-fields]]
+.Completed Username and Password Fields
+image::gfx/completed-username-password-fields.png[]
+. Click Next.
+. In the *Domain Name* field, type a name for your new OpenShift Online domain and click Finish. The provided domain name must be unique across all domains on OpenShift Online; if it is not unique, you will be instructed to provide a unique domain name.
+. From the Type list, select JBoss Enterprise Application Platform 6 (jbosseap-6).
++
+[[completed-fields-application-wizard]]
+.Completed Fields in the New OpenShift Application Wizard
+image::gfx/completed-fields-application-wizard.png[]
+. Click Next.
+. Complete the fields about the new OpenShift Online application as follows:
+* In the Domain name field, select an existing OpenShift Online domain.
+* In the Name field, type ticketmonster.
+* From the Domain list, ensure the domain you have previously created is selected.
+* From the Gear profile list, select small.
++
+[[completed-fields-application-wizard-step2]]
+.Completed Fields in the New OpenShift Application Wizard
+image::gfx/completed-fields-application-wizard-step2.png[]
+. Click Next.
+* Clear the Create a new project check box.
+* In the Use existing project field, type ticket-monster. Alternatively, click Browse to select the ticket-monster project.
+* Ensure the Create and set up a server for easy publishing check box is selected.
++
+[[completed-fields-application-wizard-step3]]
+.Completed Fields in the New OpenShift Application Wizard
+image::gfx/completed-fields-application-wizard-step3.png[]
+. Click Next.
+. Click SSH Keys wizard and click New.
+. Complete the fields about the SSH Keys to be created as follows:
+* In the Name field, type a name for the SSH key.
+* From the Key Type list, ensure SSH_RSA is selected.
+* In the SSH2 Home field, ensure your .ssh directory path is shown.
+* In the Private Key File Name field, type a name for the private key file name. The Public Key File Name field populates automatically with the name of the private key file name with .pub appended.
+. Click Finish.
+. Click OK to close the Manage SSH Keys window.
+. Click Finish to create the new OpenShift application based on the existing workspace ticket-monster project. This process may take some time to complete.
++
+[[new-openshift-application-wizard]]
+.New OpenShift Application Wizard
+image::gfx/new-openshift-application-wizard.png[]
+. At the prompt stating OpenShift application ticketmonster will be enabled on project ticket-monster ..., click OK. This configures the workspace ticket-monster project for OpenShift and connects it to the OpenShift Online Git repository system used for version control.
++
+[[import-openShift-application-prompt]]
+.Import OpenShift Application Prompt
+image::gfx/import-openShift-application-prompt.png[]
+. At the prompt stating the authenticity of the host cannot be established and asking if you are sure you want to continue connecting, verify the host information is correct and click Yes.
+. At the prompt asking if you want to publish committed changes to OpenShift, click Yes. The Console view automatically becomes the view in focus and displays the output from the OpenShift Online server. Once the OpenShift Online ticketmonster application is created and deployed, the Console view displays the following message:
++
+`Deployment completed with status: success`
++
+[[completed-deployment-openshift]]
+.New OpenShift Application Wizard
+image::gfx/completed-deployment-openshift.png[]
+
+
+== Deploying to OpenShift using the command-line
+
+To deploy TicketMonster to OpenShift Online, you must create a new OpenShift Online application based on the existing workspace project using OpenShift Tools, as detailed in the procedure below.
+
+[NOTE]
+=====================================================================================
+This procedure documents the deploying process for first-time OpenShift Online users. This
+includes one-time steps, such as signing up for an OpenShift Online account, creating an
+OpenShift Online domain and uploading SSH keys. If you have previously used OpenShift
+Online and OpenShift Tools, omit the one-time steps as appropriate.
+=====================================================================================
+
+=== Create an OpenShift Account and Domain
+
+If you do not yet have an OpenShift account and domain, https://openshift.com/[browse to OpenShift] to create the account and domain.
+
+https://openshift.redhat.com/app/getting_started[Get Started with OpenShift] details how to install the OpenShift Client tools.
+
+=== Create the OpenShift Application
+
+[NOTE]
+=====================================================================================
+The following variables are used in these instructions. Be sure to replace them as follows:
+
+* YOUR_DOMAIN_NAME should be replaced with the OpenShift domain name.
+* APPLICATION_UUID should be replaced with the UUID generated by OpenShift for your application, for example: 52864af85973ca430200006f
+* TICKETMONSTER_MAVEN_PROJECT_ROOT is the location of the Maven project sources for the TicketMonster application.
+=====================================================================================
+
+Open a shell command prompt and change to a directory of your choice. Enter the following command to create a JBoss EAP 6 application:
+
+----
+rhc app create -a ticketmonster -t jbosseap-6
+----
+
+[NOTE]
+=====================================================================================
+The domain name for this application will be `ticketmonster-YOUR_DOMAIN_NAME.rhcloud.com`
+=====================================================================================
+
+This command creates an OpenShift application named ticketmonster and will run the application inside the jbosseap-6 container. You should see some output similar to the following:
+
+----
+Application Options
+\-------------------
+Domain:     YOUR_DOMAIN
+Cartridges: jbosseap-6 (addtl. costs may apply)
+Gear Size:  default
+Scaling:    no
+
+Creating application 'ticketmonster' ... done
+
+
+Waiting for your DNS name to be available ... done
+
+Cloning into 'ticketmonster'...
+Warning: Permanently added the RSA host key for IP address '54.90.10.115' to the list of known hosts.
+
+Your application 'ticketmonster' is now available.
+
+  URL:        http://ticketmonster-YOUR_DOMAIN.rhcloud.com/
+  SSH to:     APPLICATION_UUID@ticketmonster-YOURDOMAIN.rhcloud.com
+  Git remote: ssh://APPLICATION_UUID@ticketmonster-YOUR_DOMAIN.rhcloud.com/~/git/ticketmonster.git/
+  Cloned to:  /Users/vineet/openshiftapps/ticketmonster
+
+Run 'rhc show-app ticketmonster' for more details about your app.
+----
+
+The create command creates a git repository in the current directory with the same name as the application.
+
+You do not need the generated default application, so navigate to the new git repository directory created by the OpenShift command and tell git to remove the source and pom files:
+
+----
+cd ticketmonster
+git rm -r src pom.xml
+----
+
+Copy the TicketMonster application sources into this new git repository:
+
+----
+cp -r TICKETMONSTER_MAVEN_PROJECT_ROOT/src .
+cp -r TICKETMONSTER_MAVEN_PROJECT_ROOT/pom.xml .
+----
+
+You can now deploy the changes to your OpenShift application using git as follows:
+
+----
+git add src pom.xml
+git commit -m "TicketMonster on OpenShift"
+git push
+----
+
+The final push command triggers the OpenShift infrastructure to build and deploy the changes.
+
+Note that the `openshift` profile in pom.xml is activated by OpenShift, and causes the WAR build by OpenShift to be copied to the deployments/ directory, and deployed without a context path.
+
+Now you can see the application running at http://ticketmonster-YOUR_DOMAIN.rhcloud.com/.
+
+== Using MySQL as the database
+
+You can deploy TicketMonster to OpenShift, making use of a 'real' database like MySQL, instead of the default in-memory H2 database within the JBoss EAP cartridge. You can follow the procedure outlined as follows, to first deploy the TicketMonster application to a JBoss EAP cartridge, and to then add a :
+
+. Create the OpenShift application from the TicketMonster project sources, as described in the previous sections.
+. Add the MySQL cartridge to the application.
+.. If you are using JBoss Developer Studio, select the `ticketmonster` application in the *OpenShift Explorer* view. Open the context-menu by right-clicking on it, and navigate to the *Edit Embedded Cartridges...* menu item.
++
+[[edit-embedded-cartridge-openshift-for-mysql]]
+.Edit Embedded Cartidges for an OpenShift application
+image::gfx/edit-embedded-cartridge-openshift.png[]
++ 
+Select the MySQL 5.5 cartidge, and click *Finish*.
++
+[[add-mysql-embedded-cartridge]]
+.Add MySQL cartridge
+image::gfx/add-mysql-embedded-cartridge.png[]
+.. If you are using the command-line, execute the following command, to add the MySQL 5.5 cartridge to the `ticketmonster` application:
++
+----
+rhc cartridge add mysql-5.5 -a ticketmonster
+----
+. Configure the OpenShift build process, to use the `mysql-openshift` profile within the project POM. As you would know, the Maven build on OpenShift uses the `openshift` profile by default - this profile does not contain any instructions or configuration to create a WAR file with the JPA deployment descriptor for MySQL on OpenShift. The `mysql-openshift` profile contains this configuration. Since it is not activated during the build on OpenShift, we need to instruct OpenShift to use it as well.
++
+To do so, create a file named `pre_build_jbosseap` under the `.openshift/action_hooks` directory located in the git repository of the OpenShift application, with the following contents:
++
+.TICKET_MONSTER_OPENSHIFT_GIT_REPO/.openshift/build_hooks/pre_build_jbosseap
+----
+export MAVEN_ARGS="clean package -Popenshift,mysql-openshift -DskipTests"
+----
++
+This OpenShift action hook sets up the `MAVEN_ARGS` environment variable used by OpenShift to configure the Maven build process. The exported variable now activates the `mysql-openshift` profile, in addition to the default values originally present in the variable.
+. Publish the changes to OpenShift:
+.. If you are using JBoss Developer Studio, right-click the project, go to *Team* → *Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
+.. If you are using the command line, add the `pre_build_jbosseap` file to the git index, and commit it, and push to the OpenShift repository, as follows:
++
+----
+cd <TICKET_MONSTER_OPENSHIFT_GIT_REPO>
+git add .openshift/build_hooks/pre_build_jbosseap
+git commit -m "Added pre-build action hook for MySQL"
+git push
+----
+
+[NOTE]
+======
+On Windows, you will need to run the following command to set the executable bit to the `pre_build_jbosseap` file:
+
+    git update-index --chmod=+x .openshift/build_hooks/pre_build_jbosseap
+
+This ensures the executable bit is recognized on OpenShift even though the file was committed in Windows.
+
+Since JBoss Developer Studio does not have a git console, you will need to run this from the command line.
+======
+
+
+== Using PostgreSQL as the database
+
+You can deploy TicketMonster to OpenShift, making use of a 'real' database like PostgreSQL, instead of the default in-memory H2 database within the JBoss EAP cartridge. You can follow the procedure outlined as follows:
+
+. Create the OpenShift application from the TicketMonster project sources, as described in the previous sections.
+. Add the PostgreSQL cartridge to the application.
+.. If you are using JBoss Developer Studio, select the `ticketmonster` application in the *OpenShift Explorer* view. Open the context-menu by right-clicking on it, and navigate to the *Edit Embedded Cartridges...* menu item.
++
+[[edit-embedded-cartridge-openshift-for-postgres]]
+.Edit Embedded Cartidges for an OpenShift application
+image::gfx/edit-embedded-cartridge-openshift.png[]
++
+Select the PostgreSQL 9.2 cartidge, and click *Finish*.
++
+[[add-postgresql-embedded-cartridge]]
+.Add PostgreSQL cartridge
+image::gfx/add-postgresql-embedded-cartridge.png[]
+.. If you are using the command-line, execute the following command, to add the PostgreSQL 9.2 cartridge to the `ticketmonster` application:
++
+------
+rhc cartridge add postgresql-9.2 -a ticketmonster
+------
+. Configure the OpenShift build process, to use the `postgresql-openshift` profile within the project POM. As you would know, the Maven build on OpenShift uses the `openshift` profile by default - this profile does not contain any instructions or configuration to create a WAR file with the JPA deployment descriptor for MySQL on OpenShift. The `postgresql-openshift` profile contains this configuration. Since it is not activated during the build on OpenShift, we need to instruct OpenShift to use it as well.
++
+To do so, create a file named `pre_build_jbosseap` under the `.openshift/action_hooks` directory located in the git repository of the OpenShift application, with the following contents:
++
+.TICKET_MONSTER_OPENSHIFT_GIT_REPO/.openshift/build_hooks/pre_build_jbosseap
+----
+export MAVEN_ARGS="clean package -Popenshift,postgresql-openshift -DskipTests"
+----
++
+This OpenShift action hook sets up the `MAVEN_ARGS` environment variable used by OpenShift to configure the Maven build process. The exported variable now activates the `postgresql-openshift` profile, in addition to the default values originally present in the variable.
+. Publish the changes to OpenShift:
+.. If you are using JBoss Developer Studio, right-click the project, go to *Team* → *Commit...* to commit the changes. Select the `pre_build_jbosseap` file to add to the commit. Choose the *Commit and Push* button during committing, to push the changes to the OpenShift repository.
+.. If you are using the command line, add the `pre_build_jbosseap` file to the git index, and commit it, and push to the OpenShift repository, as follows:
++
+------
+cd <TICKET_MONSTER_OPENSHIFT_GIT_REPO>
+git add .openshift/build_hooks/pre_build_jbosseap
+git commit -m "Added pre-build action hook for PostgreSQL"
+git push
+------
+
+[NOTE]
+======
+On Windows, you will need to run the following command to set the executable bit to the `pre_build_jbosseap` file:
+
+    git update-index --chmod=+x .openshift/build_hooks/pre_build_jbosseap
+
+This ensures the executable bit is recognized on OpenShift even though the file was committed in Windows.
+
+Since JBoss Developer Studio does not have a git console, you will need to run this from the command line.
+======
